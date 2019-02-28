@@ -12,7 +12,7 @@ Pull in every source file in a directory as a module.
 automod = "0.1"
 ```
 
-### Syntax
+## Syntax
 
 ```rust
 automod::dir!("path/to/directory");
@@ -25,7 +25,7 @@ The path is given relative to the directory containing Cargo.toml.
 
 It is an error if the given directory contains no source files.
 
-### Example
+## Example
 
 Suppose that we would like to keep a directory of regression tests for
 individual numbered issues:
