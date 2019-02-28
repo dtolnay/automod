@@ -69,12 +69,8 @@ pub fn dir(input: TokenStream) -> TokenStream {
     let path = input.value();
 
     let expanded = match source_file_names(path) {
-        Ok(names) => {
-            names.into_iter().map(mod_item).collect()
-        }
-        Err(err) => {
-            syn::Error::new(Span::call_site(), err).to_compile_error()
-        }
+        Ok(names) => names.into_iter().map(mod_item).collect(),
+        Err(err) => syn::Error::new(Span::call_site(), err).to_compile_error(),
     };
 
     TokenStream::from(expanded)

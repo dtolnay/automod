@@ -16,7 +16,11 @@ impl Display for Error {
 
         match self {
             Io(err) => err.fmt(f),
-            Utf8(name) => write!(f, "unsupported non-utf8 file name: {}", name.to_string_lossy()),
+            Utf8(name) => write!(
+                f,
+                "unsupported non-utf8 file name: {}",
+                name.to_string_lossy(),
+            ),
             Empty => f.write_str("no source files found"),
         }
     }
