@@ -1,4 +1,4 @@
-// This example demonstrates using the mod-all macro to collect together a
+// This example demonstrates using the automod macro to collect together a
 // directory of test cases. Each source file in the 'regression' directory can
 // be dedicated to testing an individual numbered issue. As files are added in
 // that directory, they automatically become part of the crate without needing

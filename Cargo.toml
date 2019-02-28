@@ -1,11 +1,11 @@
 [package]
-name = "mod-all"
+name = "automod"
 version = "0.0.0"
 authors = ["David Tolnay <dtolnay@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "Pull in every source file in a directory as a module."
-repository = "https://github.com/dtolnay/mod-all"
-documentation = "https://docs.rs/mod-all"
+repository = "https://github.com/dtolnay/automod"
+documentation = "https://docs.rs/automod"
 readme = "README.md"
 edition = "2018"
 
