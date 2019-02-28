@@ -8,6 +8,8 @@
 //
 //    cargo test --example tests
 
-mod regression;
+mod regression {
+    automod::dir!("examples/regression");
+}
 
 fn main() {}

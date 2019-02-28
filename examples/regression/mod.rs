@@ -1,1 +1,0 @@
-automod::dir!("examples/regression");
