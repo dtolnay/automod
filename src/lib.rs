@@ -71,6 +71,10 @@ fn source_file_names<P: AsRef<Path>>(dir: P) -> Result<Vec<String>> {
         return Err(Error::Utf8(failure));
     }
 
+    if names.is_empty() {
+        return Err(Error::Empty);
+    }
+
     names.sort();
     Ok(names)
 }
