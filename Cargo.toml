@@ -2,6 +2,11 @@
 name = "mod-all"
 version = "0.0.0"
 authors = ["David Tolnay <dtolnay@gmail.com>"]
+license = "MIT OR Apache-2.0"
+description = "Pull in every source file in a directory as a module."
+repository = "https://github.com/dtolnay/mod-all"
+documentation = "https://docs.rs/mod-all"
+readme = "README.md"
 edition = "2018"
 
 [lib]
