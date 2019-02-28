@@ -1,7 +1,7 @@
 Automod
 =======
 
-[![Build Status](https://api.travis-ci.com/dtolnay/automod.svg?branch=master)](https://travis-ci.org/dtolnay/automod)
+[![Build Status](https://api.travis-ci.com/dtolnay/automod.svg?branch=master)](https://travis-ci.com/dtolnay/automod)
 [![Latest Version](https://img.shields.io/crates/v/automod.svg)](https://crates.io/crates/automod)
 [![Rust Documentation](https://img.shields.io/badge/api-rustdoc-blue.svg)](https://docs.rs/automod)
 
