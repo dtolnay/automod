@@ -7,6 +7,11 @@ Automod
 
 Pull in every source file in a directory as a module.
 
+```toml
+[dependencies]
+automod = "0.1"
+```
+
 ### Syntax
 
 ```rust
