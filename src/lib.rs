@@ -94,7 +94,7 @@ fn source_file_names<P: AsRef<Path>>(dir: P) -> Result<Vec<String>> {
         }
 
         let file_name = entry.file_name();
-        if file_name == "mod.rs" {
+        if file_name == "mod.rs" || file_name == "lib.rs" || file_name == "main.rs" {
             continue;
         }
 
