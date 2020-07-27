@@ -63,7 +63,8 @@ mod error;
 use proc_macro::TokenStream;
 use proc_macro2::{Ident, Span, TokenStream as TokenStream2};
 use quote::quote;
-use syn::{parse_macro_input, LitStr};
+use syn::parse::{Parse, ParseStream};
+use syn::{parse_macro_input, LitStr, Visibility};
 
 use std::ffi::OsStr;
 use std::fs;
@@ -71,23 +72,38 @@ use std::path::Path;
 
 use crate::error::{Error, Result};
 
+struct Arg {
+    vis: Visibility,
+    path: LitStr,
+}
+
+impl Parse for Arg {
+    fn parse(input: ParseStream) -> syn::Result<Self> {
+        Ok(Arg {
+            vis: input.parse()?,
+            path: input.parse()?,
+        })
+    }
+}
+
 #[proc_macro]
 pub fn dir(input: TokenStream) -> TokenStream {
-    let input = parse_macro_input!(input as LitStr);
-    let path = input.value();
+    let input = parse_macro_input!(input as Arg);
+    let vis = &input.vis;
+    let path = input.path.value();
 
     let expanded = match source_file_names(path) {
-        Ok(names) => names.into_iter().map(mod_item).collect(),
+        Ok(names) => names.into_iter().map(|name| mod_item(vis, name)).collect(),
         Err(err) => syn::Error::new(Span::call_site(), err).to_compile_error(),
     };
 
     TokenStream::from(expanded)
 }
 
-fn mod_item(name: String) -> TokenStream2 {
+fn mod_item(vis: &Visibility, name: String) -> TokenStream2 {
     let ident = Ident::new(&name, Span::call_site());
     quote! {
-        mod #ident;
+        #vis mod #ident;
     }
 }
 
