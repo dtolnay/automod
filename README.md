@@ -40,13 +40,15 @@ individual numbered issues:
 
 We would like to be able to toss files in this directory and have them
 automatically tested, without listing them in some explicit list of modules.
-Automod solves this by adding *tests/regression/mod.rs* containing:
+Automod solves this by adding *tests/regression.rs* containing:
 
 ```rust
-automod::dir!("tests/regression");
+mod regression {
+    automod::dir!("tests/regression");
+}
 ```
 
-The invocation expands to:
+The macro invocation expands to:
 
 ```rust
 mod issue1;
