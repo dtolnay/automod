@@ -58,6 +58,8 @@
 //! # };
 //! ```
 
+#![allow(clippy::enum_glob_use, clippy::needless_pass_by_value)]
+
 extern crate proc_macro;
 
 mod error;
