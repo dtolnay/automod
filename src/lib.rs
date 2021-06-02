@@ -64,17 +64,15 @@ extern crate proc_macro;
 
 mod error;
 
+use crate::error::{Error, Result};
 use proc_macro::TokenStream;
 use proc_macro2::{Ident, Span, TokenStream as TokenStream2};
 use quote::quote;
-use syn::parse::{Parse, ParseStream};
-use syn::{parse_macro_input, LitStr, Visibility};
-
 use std::ffi::OsStr;
 use std::fs;
 use std::path::Path;
-
-use crate::error::{Error, Result};
+use syn::parse::{Parse, ParseStream};
+use syn::{parse_macro_input, LitStr, Visibility};
 
 struct Arg {
     vis: Visibility,
