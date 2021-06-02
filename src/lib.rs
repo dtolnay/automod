@@ -68,6 +68,7 @@ use crate::error::{Error, Result};
 use proc_macro::TokenStream;
 use proc_macro2::{Ident, Span, TokenStream as TokenStream2};
 use quote::quote;
+use std::env;
 use std::ffi::OsStr;
 use std::fs;
 use std::path::Path;
@@ -94,15 +95,13 @@ pub fn dir(input: TokenStream) -> TokenStream {
     let vis = &input.vis;
     let rel_path = input.path.value();
 
-    //We need to get this at runtime so it points to the crate calling it
-    //Using env! would be compile-time, and would point to this crate directory
-    let runtime_manifest_dir = match std::env::var("CARGO_MANIFEST_DIR") {
+    let manifest_dir = match env::var("CARGO_MANIFEST_DIR") {
         Ok(val) => val,
         Err(err) => {
             return TokenStream::from(syn::Error::new(Span::call_site(), err).to_compile_error());
         }
     };
-    let dir = Path::new(&runtime_manifest_dir).join(rel_path);
+    let dir = Path::new(&manifest_dir).join(rel_path);
 
     let expanded = match source_file_names(dir) {
         Ok(names) => names.into_iter().map(|name| mod_item(vis, name)).collect(),
