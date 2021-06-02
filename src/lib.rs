@@ -94,9 +94,19 @@ impl Parse for Arg {
 pub fn dir(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as Arg);
     let vis = &input.vis;
-    let path = input.path.value();
+    let rel_path = input.path.value();
 
-    let expanded = match source_file_names(path) {
+    //We need to get this at runtime so it points to the crate calling it
+    //Using env! would be compile-time, and would point to this crate directory
+    let runtime_manifest_dir = match std::env::var("CARGO_MANIFEST_DIR") {
+        Ok(val) => val,
+        Err(err) => {
+            return TokenStream::from(syn::Error::new(Span::call_site(), err).to_compile_error());
+        }
+    };
+    let dir = Path::new(&runtime_manifest_dir).join(rel_path);
+
+    let expanded = match source_file_names(dir) {
         Ok(names) => names.into_iter().map(|name| mod_item(vis, name)).collect(),
         Err(err) => syn::Error::new(Span::call_site(), err).to_compile_error(),
     };
