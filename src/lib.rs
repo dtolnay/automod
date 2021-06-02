@@ -71,7 +71,7 @@ use quote::quote;
 use std::env;
 use std::ffi::OsStr;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use syn::parse::{Parse, ParseStream};
 use syn::{parse_macro_input, LitStr, Visibility};
 
@@ -95,13 +95,10 @@ pub fn dir(input: TokenStream) -> TokenStream {
     let vis = &input.vis;
     let rel_path = input.path.value();
 
-    let manifest_dir = match env::var("CARGO_MANIFEST_DIR") {
-        Ok(val) => val,
-        Err(err) => {
-            return TokenStream::from(syn::Error::new(Span::call_site(), err).to_compile_error());
-        }
+    let dir = match env::var("CARGO_MANIFEST_DIR") {
+        Ok(manifest_dir) => Path::new(&manifest_dir).join(rel_path),
+        Err(_) => PathBuf::from(rel_path),
     };
-    let dir = Path::new(&manifest_dir).join(rel_path);
 
     let expanded = match source_file_names(dir) {
         Ok(names) => names.into_iter().map(|name| mod_item(vis, name)).collect(),
