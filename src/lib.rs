@@ -95,9 +95,9 @@ pub fn dir(input: TokenStream) -> TokenStream {
     let vis = &input.vis;
     let rel_path = input.path.value();
 
-    let dir = match env::var("CARGO_MANIFEST_DIR") {
-        Ok(manifest_dir) => Path::new(&manifest_dir).join(rel_path),
-        Err(_) => PathBuf::from(rel_path),
+    let dir = match env::var_os("CARGO_MANIFEST_DIR") {
+        Some(manifest_dir) => PathBuf::from(manifest_dir).join(rel_path),
+        None => PathBuf::from(rel_path),
     };
 
     let expanded = match source_file_names(dir) {
