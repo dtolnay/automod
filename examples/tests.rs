@@ -12,4 +12,8 @@ mod regression {
     automod::dir!("examples/regression");
 }
 
+mod issue4 {
+    automod::dir!("examples/issue4");
+}
+
 fn main() {}

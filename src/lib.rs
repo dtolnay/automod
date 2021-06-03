@@ -109,9 +109,18 @@ pub fn dir(input: TokenStream) -> TokenStream {
 }
 
 fn mod_item(vis: &Visibility, name: String) -> TokenStream2 {
-    let ident = Ident::new(&name, Span::call_site());
-    quote! {
-        #vis mod #ident;
+    if name.contains('-') {
+        let path = format!("{}.rs", name);
+        let ident = Ident::new(&name.replace('-', "_"), Span::call_site());
+        quote! {
+            #[path = #path]
+            #vis mod #ident;
+        }
+    } else {
+        let ident = Ident::new(&name, Span::call_site());
+        quote! {
+            #vis mod #ident;
+        }
     }
 }
 
