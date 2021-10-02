@@ -8,6 +8,7 @@ repository = "https://github.com/dtolnay/automod"
 documentation = "https://docs.rs/automod"
 readme = "README.md"
 edition = "2018"
+rust-version = "1.31"
 
 [lib]
 proc-macro = true
