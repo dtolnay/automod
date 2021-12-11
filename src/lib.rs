@@ -130,24 +130,35 @@ fn source_file_names<P: AsRef<Path>>(dir: P) -> Result<Vec<String>> {
 
     for entry in fs::read_dir(dir)? {
         let entry = entry?;
-        if !entry.file_type()?.is_file() {
-            continue;
-        }
-
-        let file_name = entry.file_name();
-        if file_name == "mod.rs" || file_name == "lib.rs" || file_name == "main.rs" {
-            continue;
-        }
-
-        let path = Path::new(&file_name);
-        if path.extension() == Some(OsStr::new("rs")) {
-            match file_name.into_string() {
-                Ok(mut utf8) => {
-                    utf8.truncate(utf8.len() - ".rs".len());
-                    names.push(utf8);
+        if entry.file_type()?.is_dir() {
+            let mut mod_file = entry.path();
+            mod_file.push("mod.rs");
+            if mod_file.as_path().exists() && mod_file.as_path().is_file() {
+                match entry.file_name().into_string() {
+                    Ok(utf8) => {
+                        names.push(utf8);
+                    }
+                    Err(non_utf8) => {
+                        failures.push(non_utf8);
+                    }
                 }
-                Err(non_utf8) => {
-                    failures.push(non_utf8);
+            }
+        } else if entry.file_type()?.is_file() {
+            let file_name = entry.file_name();
+            if file_name == "mod.rs" || file_name == "lib.rs" || file_name == "main.rs" {
+                continue;
+            }
+
+            let path = Path::new(&file_name);
+            if path.extension() == Some(OsStr::new("rs")) {
+                match file_name.into_string() {
+                    Ok(mut utf8) => {
+                        utf8.truncate(utf8.len() - ".rs".len());
+                        names.push(utf8);
+                    }
+                    Err(non_utf8) => {
+                        failures.push(non_utf8);
+                    }
                 }
             }
         }
