@@ -2,6 +2,7 @@
 name = "automod"
 version = "1.0.3"
 authors = ["David Tolnay <dtolnay@gmail.com>"]
+categories = ["development-tools::build-utils", "filesystem", "no-std"]
 description = "Pull in every source file in a directory as a module."
 documentation = "https://docs.rs/automod"
 edition = "2018"
