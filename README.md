@@ -57,6 +57,22 @@ mod issue2;
 mod issue128;
 ```
 
+Analogously, the generated module declarations can be markes as public:
+```rust
+mod regression {
+    automod::dir!(pub "tests/regression");
+}
+```
+
+Expanding to:
+```rust
+pub mod issue1;
+pub mod issue2;
+/* ... */
+pub mod issue128;
+```
+
+
 <br>
 
 #### License
