@@ -7,7 +7,6 @@ description = "Pull in every source file in a directory as a module."
 documentation = "https://docs.rs/automod"
 edition = "2018"
 license = "MIT OR Apache-2.0"
-readme = "README.md"
 repository = "https://github.com/dtolnay/automod"
 rust-version = "1.31"
 
