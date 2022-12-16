@@ -4,7 +4,7 @@ Automod
 [<img alt="github" src="https://img.shields.io/badge/github-dtolnay/automod-8da0cb?style=for-the-badge&labelColor=555555&logo=github" height="20">](https://github.com/dtolnay/automod)
 [<img alt="crates.io" src="https://img.shields.io/crates/v/automod.svg?style=for-the-badge&color=fc8d62&logo=rust" height="20">](https://crates.io/crates/automod)
 [<img alt="docs.rs" src="https://img.shields.io/badge/docs.rs-automod-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs" height="20">](https://docs.rs/automod)
-[<img alt="build status" src="https://img.shields.io/github/workflow/status/dtolnay/automod/CI/master?style=for-the-badge" height="20">](https://github.com/dtolnay/automod/actions?query=branch%3Amaster)
+[<img alt="build status" src="https://img.shields.io/github/actions/workflow/status/dtolnay/automod/ci.yml?branch=master&style=for-the-badge" height="20">](https://github.com/dtolnay/automod/actions?query=branch%3Amaster)
 
 Pull in every source file in a directory as a module.
 
