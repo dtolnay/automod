@@ -109,18 +109,22 @@ pub fn dir(input: TokenStream) -> TokenStream {
     TokenStream::from(expanded)
 }
 
-fn mod_item(vis: &Visibility, mut name: String) -> TokenStream2 {
-    let path = format!("{}.rs", name);
-
-    name = name.replace('-', "_");
-    if name.starts_with(|ch: char| ch.is_ascii_digit()) {
-        name.insert(0, '_');
+fn mod_item(vis: &Visibility, name: String) -> TokenStream2 {
+    let mut module_name = name.replace('-', "_");
+    if module_name.starts_with(|ch: char| ch.is_ascii_digit()) {
+        module_name.insert(0, '_');
     }
 
-    let ident = Ident::new(&name, Span::call_site());
+    let path = Option::into_iter(if name == module_name {
+        None
+    } else {
+        Some(format!("{}.rs", name))
+    });
+
+    let ident = Ident::new(&module_name, Span::call_site());
 
     quote! {
-        #[path = #path]
+        #(#[path = #path])*
         #vis mod #ident;
     }
 }
