@@ -113,7 +113,7 @@ fn mod_item(vis: &Visibility, mut name: String) -> TokenStream2 {
     let path = format!("{}.rs", name);
 
     name = name.replace('-', "_");
-    if name.chars().next().unwrap().is_ascii_digit() {
+    if name.starts_with(|ch: char| ch.is_ascii_digit()) {
         name = format!("_{}", name)
     }
 
