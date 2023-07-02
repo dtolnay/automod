@@ -114,7 +114,7 @@ fn mod_item(vis: &Visibility, mut name: String) -> TokenStream2 {
 
     name = name.replace('-', "_");
     if name.starts_with(|ch: char| ch.is_ascii_digit()) {
-        name = format!("_{}", name)
+        name.insert(0, '_');
     }
 
     let ident = Ident::new(&name, Span::call_site());
