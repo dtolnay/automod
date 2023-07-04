@@ -58,7 +58,7 @@
 //! # };
 //! ```
 
-#![doc(html_root_url = "https://docs.rs/automod/1.0.10")]
+#![doc(html_root_url = "https://docs.rs/automod/1.0.11")]
 #![allow(clippy::enum_glob_use, clippy::needless_pass_by_value)]
 
 extern crate proc_macro;
