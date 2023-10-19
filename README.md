@@ -26,6 +26,9 @@ The path is given relative to the directory containing Cargo.toml.
 
 It is an error if the given directory contains no source files.
 
+The macro takes an optional visibility to apply on the generated modules:
+`automod::dir!(pub "path/to/directory")`.
+
 ## Example
 
 Suppose that we would like to keep a directory of regression tests for
