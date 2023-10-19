@@ -1,6 +1,6 @@
 [package]
 name = "automod"
-version = "1.0.12"
+version = "1.0.13"
 authors = ["David Tolnay <dtolnay@gmail.com>"]
 categories = ["development-tools::build-utils", "filesystem", "no-std", "no-std::no-alloc"]
 description = "Pull in every source file in a directory as a module."
