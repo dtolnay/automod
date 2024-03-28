@@ -60,6 +60,16 @@ mod issue2;
 mod issue128;
 ```
 
+To automatically include new test files, say in `cargo test`, you can modify
+`build.rs` as follows. Otherwise, the macro will only be run once at compile
+time and cached until a clean build.
+
+```rust
+fn main() {
+    println!("cargo:rerun-if-changed=tests/regression");
+}
+```
+
 <br>
 
 #### License
