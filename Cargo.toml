@@ -6,7 +6,6 @@ categories = ["development-tools::build-utils", "filesystem", "no-std", "no-std:
 description = "Pull in every source file in a directory as a module."
 documentation = "https://docs.rs/automod"
 edition = "2021"
-exclude = ["examples"] # work around https://github.com/rust-lang/cargo/issues/11496
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/dtolnay/automod"
 rust-version = "1.56"
