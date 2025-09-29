@@ -62,7 +62,11 @@
 //! ```
 
 #![doc(html_root_url = "https://docs.rs/automod/1.0.15")]
-#![allow(clippy::enum_glob_use, clippy::needless_pass_by_value)]
+#![allow(
+    clippy::enum_glob_use,
+    clippy::needless_pass_by_value,
+    clippy::uninlined_format_args
+)]
 
 extern crate proc_macro;
 
