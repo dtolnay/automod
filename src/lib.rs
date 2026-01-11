@@ -142,7 +142,7 @@ fn source_file_names<P: AsRef<Path>>(dir: P) -> Result<Vec<String>> {
 
     for entry in fs::read_dir(dir)? {
         let entry = entry?;
-        if !entry.file_type()?.is_file() {
+        if !fs::metadata(entry.path())?.is_file() {
             continue;
         }
 
