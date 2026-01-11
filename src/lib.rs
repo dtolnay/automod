@@ -61,7 +61,7 @@
 //! # };
 //! ```
 
-#![doc(html_root_url = "https://docs.rs/automod/1.0.15")]
+#![doc(html_root_url = "https://docs.rs/automod/1.0.16")]
 #![allow(
     clippy::enum_glob_use,
     clippy::needless_pass_by_value,
