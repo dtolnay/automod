@@ -61,6 +61,39 @@ mod issue2;
 mod issue128;
 ```
 
+## Recursive directories
+
+Use `dir_recursive!` to include both source files and nested directories:
+
+```rust
+automod::dir_recursive!(pub "src");
+```
+
+This expands nested directories as inline modules. Continue using `dir!` for
+the existing non-recursive behavior.
+
+For example:
+
+```text
+src/
+  lib.rs
+  payment/
+    alipay.rs
+    wechat.rs
+  user.rs
+```
+
+This expands to modules equivalent to:
+
+```rust
+pub mod payment {
+    pub mod alipay;
+    pub mod wechat;
+}
+
+pub mod user;
+```
+
 <br>
 
 #### License

@@ -61,6 +61,18 @@
 //! mod issue128;
 //! # };
 //! ```
+//!
+//! Use `dir_recursive!` to collect source files and directories recursively:
+//!
+//! ```
+//! # const IGNORE: &str = stringify! {
+//! automod::dir_recursive!(pub "src");
+//! # };
+//! ```
+//!
+//! This expands nested directories as inline modules. Use this only when that
+//! module structure is intended, and continue using `dir!` for the existing
+//! non-recursive behavior.
 
 #![doc(html_root_url = "https://docs.rs/automod/1.0.17")]
 #![allow(
@@ -77,6 +89,7 @@ use crate::error::{Error, Result};
 use proc_macro::TokenStream;
 use proc_macro2::{Ident, Span, TokenStream as TokenStream2};
 use quote::quote;
+use std::collections::BTreeSet;
 use std::env;
 use std::ffi::OsStr;
 use std::fs;
@@ -117,12 +130,38 @@ pub fn dir(input: TokenStream) -> TokenStream {
     TokenStream::from(expanded)
 }
 
-fn mod_item(vis: &Visibility, name: String) -> TokenStream2 {
+#[proc_macro]
+pub fn dir_recursive(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as Arg);
+    let vis = &input.vis;
+    let rel_path = input.path.value();
+
+    let dir = match env::var_os("CARGO_MANIFEST_DIR") {
+        Some(manifest_dir) => PathBuf::from(manifest_dir).join(rel_path),
+        None => PathBuf::from(rel_path),
+    };
+
+    let expanded = match source_modules(dir) {
+        Ok(modules) => modules
+            .into_iter()
+            .map(|module| mod_item_recursive(vis, module))
+            .collect(),
+        Err(err) => syn::Error::new(Span::call_site(), err).to_compile_error(),
+    };
+
+    TokenStream::from(expanded)
+}
+
+fn module_name(name: &str) -> String {
     let mut module_name = name.replace('-', "_");
     if module_name.starts_with(|ch: char| ch.is_ascii_digit()) {
         module_name.insert(0, '_');
     }
+    module_name
+}
 
+fn mod_item(vis: &Visibility, name: String) -> TokenStream2 {
+    let module_name = module_name(&name);
     let path = Option::into_iter(if name == module_name {
         None
     } else {
@@ -134,6 +173,38 @@ fn mod_item(vis: &Visibility, name: String) -> TokenStream2 {
     quote! {
         #(#[path = #path])*
         #vis mod #ident;
+    }
+}
+
+fn mod_item_recursive(vis: &Visibility, module: Module) -> TokenStream2 {
+    let module_name = module_name(&module.name);
+    let is_leaf = module.items.is_empty();
+    let path = Option::into_iter(if module.name == module_name {
+        None
+    } else if is_leaf {
+        Some(format!("{}.rs", module.name))
+    } else {
+        Some(module.name)
+    });
+
+    let ident = Ident::new(&module_name, Span::call_site());
+    let items = module
+        .items
+        .into_iter()
+        .map(|module| mod_item_recursive(vis, module));
+
+    if is_leaf {
+        quote! {
+            #(#[path = #path])*
+            #vis mod #ident;
+        }
+    } else {
+        quote! {
+            #(#[path = #path])*
+            #vis mod #ident {
+                #(#items)*
+            }
+        }
     }
 }
 
@@ -177,4 +248,73 @@ fn source_file_names<P: AsRef<Path>>(dir: P) -> Result<Vec<String>> {
 
     names.sort();
     Ok(names)
+}
+
+struct Module {
+    name: String,
+    items: Vec<Module>,
+}
+
+fn source_modules<P: AsRef<Path>>(dir: P) -> Result<Vec<Module>> {
+    let mut modules = Vec::new();
+    let mut failures = Vec::new();
+    let mut names = BTreeSet::new();
+
+    for entry in fs::read_dir(dir)? {
+        let entry = entry?;
+        let file_type = entry.file_type()?;
+        let file_name = entry.file_name();
+
+        if file_type.is_file() {
+            if file_name == "mod.rs" || file_name == "lib.rs" || file_name == "main.rs" {
+                continue;
+            }
+
+            let path = Path::new(&file_name);
+            if path.extension() == Some(OsStr::new("rs")) {
+                match file_name.into_string() {
+                    Ok(mut utf8) => {
+                        utf8.truncate(utf8.len() - ".rs".len());
+                        if !names.insert(module_name(&utf8)) {
+                            return Err(Error::Duplicate(utf8));
+                        }
+                        modules.push(Module {
+                            name: utf8,
+                            items: Vec::new(),
+                        });
+                    }
+                    Err(non_utf8) => {
+                        failures.push(non_utf8);
+                    }
+                }
+            }
+        } else if file_type.is_dir() {
+            match file_name.into_string() {
+                Ok(utf8) => {
+                    if !names.insert(module_name(&utf8)) {
+                        return Err(Error::Duplicate(utf8));
+                    }
+                    modules.push(Module {
+                        name: utf8,
+                        items: source_modules(entry.path())?,
+                    });
+                }
+                Err(non_utf8) => {
+                    failures.push(non_utf8);
+                }
+            }
+        }
+    }
+
+    failures.sort();
+    if let Some(failure) = failures.into_iter().next() {
+        return Err(Error::Utf8(failure));
+    }
+
+    if modules.is_empty() {
+        return Err(Error::Empty);
+    }
+
+    modules.sort_by(|a, b| a.name.cmp(&b.name));
+    Ok(modules)
 }
