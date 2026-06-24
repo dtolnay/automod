@@ -5,6 +5,7 @@ use std::io;
 pub enum Error {
     Io(io::Error),
     Utf8(OsString),
+    Duplicate(String),
     Empty,
 }
 
@@ -21,6 +22,7 @@ impl Display for Error {
                 "unsupported non-utf8 file name: {}",
                 name.to_string_lossy(),
             ),
+            Duplicate(name) => write!(f, "duplicate module name: {name}"),
             Empty => f.write_str("no source files found"),
         }
     }

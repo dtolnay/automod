@@ -12,4 +12,8 @@ mod regression {
     automod::dir!("examples/regression");
 }
 
+mod nested {
+    automod::dir_recursive!("examples/nested");
+}
+
 fn main() {}
